@@ -32,7 +32,7 @@ export const StoreModal = () => {
       setLoading(true);
       const response = await axios.post("/api/stores", values);
       window.location.assign(`/${response.data.id}`)
-      toast.success("Store created 🎉")
+      toast.success("Store creation successful 🎉")
     } catch (error) {
       toast.error("Something went wrong 🤯")
     } finally {
@@ -59,12 +59,27 @@ export const StoreModal = () => {
                   </FormMessage>
                 </FormItem>
               )}/>
-              <div className="pt-6 space-x-2 flex items-center justify-end w-full">
-                <Button disabled={loading} variant="outline" onClick={storeModal.onClose}>
-                  Cancel
-                </Button>
-                <Button disabled={loading} type="submit">
-                  Create
+              <div className="pt-6 space-x-2 flex items-center justify-end w-ful">
+                  <Button className="text-rose-700 hover:text-white border
+                  border-rose-700 hover:bg-rose-700 focus:ring-4 focus:outline-none
+                  focus:ring-red-300 font-medium rounded-lg text-sm text-center dark:border-red-500
+                  dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600
+                  dark:focus:ring-red-900"
+                  disabled={loading}
+                  variant="outline"
+                  onClick={storeModal.onClose}>
+                    Cancel
+                  </Button>
+                  <Button className="relative items-center border-lime-400 border-2 hover:text-white
+                  justify-center p-0 overflow-hidden text-sm font-medium
+                  text-lime-500 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300
+                  group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white"
+                  disabled={loading}
+                  type="submit"
+                  variant="outline">
+                  <span className="relative px-5 py-2.5 dark:hover-text-white transition-all ease-in duration-50 bg-white rounded-md group-hover:bg-opacity-0">
+                    Create
+                  </span>
                 </Button>
               </div>
             </form>
