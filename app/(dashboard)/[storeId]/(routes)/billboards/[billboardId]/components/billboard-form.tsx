@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Store } from "@prisma/client";
+import { Billboard } from "@prisma/client";
 import { Trash2 } from "lucide-react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -14,21 +14,22 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
+import ImageUpload from "@/components/ui/image-upload";
 
 
-interface SettingsFormProps {
-  initialData: Store;
+interface BillboardFormProps {
+  initialData: Billboard | null;
 }
 
 const formSchema = z.object({
-  name: z.string().min(1).max(255),
+  label: z.string().min(1).max(255),
+  imageUrl: z.string().url().min(1).max(255),
 });
 
-type SettingsFormValues = z.infer<typeof formSchema>;
+type BillboardFormValues = z.infer<typeof formSchema>;
 
-export const SettingsForm: React.FC<SettingsFormProps> = ({
+export const BillboardForm: React.FC<BillboardFormProps> = ({
   initialData
 }) => {
   const params = useParams();
@@ -36,12 +37,20 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
   const origin = useOrigin();
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const form = useForm<SettingsFormValues>({
+  const title = initialData ? "Edit Billboard" : "New Billboard";
+  const description = initialData ? "Edit your billboard" : "Create a new billboard";
+  const toastMessage = initialData ? "Billboard updated successfully 🎉" : "Billboard created successfully 🎉";
+  const action = initialData ? "Save Changes" : "Create Billboard";
+
+  const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData
+    defaultValues: initialData || {
+      label: "",
+      imageUrl: "",
+    }
   });
 
-  const onSubmit = async (data: SettingsFormValues) => {
+  const onSubmit = async (data: BillboardFormValues) => {
     try {
       setLoading(true);
       await axios.patch(`/api/stores/${params.storeId}`, data);
@@ -78,7 +87,8 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
     loading={loading}
     />
     <div className="flex items-center justify-between">
-      <Heading title="Settings" description="Manage your store"/>
+      <Heading title= {title} description= {description} />
+      {initialData && (
       <Button disabled={loading} variant="destructive" className="bg-gradient-to-r
         from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4
         focus:outline-none focus:ring-red-300 dark:focus:ring-red-800
@@ -89,39 +99,52 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
       >
         <Trash2 className="h-4 w-4 "/>
       </Button>
+      )}
     </div>
     <Separator/>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+        <FormField control={form.control} name="imageUrl" render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              <span className="text-sm font-medium text-gray-700">Background Image</span>
+            </FormLabel>
+            <FormControl>
+              <ImageUpload value={field.value ? [field.value] : []}
+              disabled={loading}
+              onChange={(url) => field.onChange(url )}
+              onRemove={() => field.onChange("")}
+              />
+            </FormControl>
+            <FormMessage/>
+          </FormItem>
+        )}/>
         <div className="grid grid-cols-3 gap-8">
-          <FormField control={form.control} name="name" render={({ field }) => (
+          <FormField control={form.control} name="label" render={({ field }) => (
             <FormItem>
               <FormLabel>
-                <span className="text-sm font-medium text-gray-700">Name</span>
+                <span className="text-sm font-medium text-gray-700">Label</span>
               </FormLabel>
               <FormControl>
-                <Input disabled={loading} placeholder="Store name" {...field}/>
+                <Input disabled={loading} placeholder="Billboard Label" {...field}/>
               </FormControl>
               <FormMessage/>
             </FormItem>
           )}/>
         </div>
-        <Button disabled={loading} className="text-gray-900 bg-gradient-to-r
-          from-lime-300 via-lime-400 to-lime-500 hover:bg-gradient-to-br
+        <Button disabled={loading} className="text-white bg-gradient-to-r
+          from-lime-400 via-lime-500 to-lime-600 hover:bg-gradient-to-br
           focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800
-          rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2
+          rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-green-500 border-2
+          border-opacity-50 hover:border-lime-800 focus:border-lime-200
           shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80"
           type="submit"
         >
-          <span className="font-bold">Save Changes</span>
+          <span className="font-bold">{action}</span>
         </Button>
       </form>
     </Form>
     <Separator/>
-    <ApiAlert
-    title="NEXT_PUBLIC_API_KEY"
-    description={`${origin}/api/${params.storeId}`}
-    variant="public"/>
   </>
   )
 };
