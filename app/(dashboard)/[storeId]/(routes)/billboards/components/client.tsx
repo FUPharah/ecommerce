@@ -16,7 +16,7 @@ export const BillboardClient = () => {
         description="Billboards are the main way to display your content." />
         <Button className="text-white bg-gradient-to-r from-cyan-500 to-blue-500
         hover:bg-gradient-to-bl focus:ring-4 focus:outline-none border-2
-        border-blue-500 border-opacity-50
+        border-blue-500 border-opacity-50 hover:shadow-cyan-800
         hover:border-cyan-800 focus:border-cyan-200
         focus:ring-cyan-300 dark:focus:ring-cyan-800 font-extrabold
         rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 shadow-lg

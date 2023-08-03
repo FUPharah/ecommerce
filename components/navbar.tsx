@@ -17,10 +17,12 @@ const Navbar = async () => {
   return (
     <div className="border-b">
       <div className="flex h-16 items-center px-4">
-        <StoreSwitcher items={stores}/>
+        <StoreSwitcher className="bg-stone-300" items={stores}/>
         <MainNav className="mx-6"/>
         <div className="ml-auto flex items-center space-x-4">
+          <div className="border-2 rounded-full border-rose-600">
           <UserButton afterSignOutUrl="/"/>
+          </div>
         </div>
       </div>
     </div>
