@@ -14,7 +14,6 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 
 
@@ -34,7 +33,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 }) => {
   const params = useParams();
   const router = useRouter();
-  const origin = useOrigin();
+
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const title = initialData ? "Edit Billboard" : "New Billboard";
@@ -75,7 +74,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
       setLoading(true)
       await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
       router.refresh()
-      router.push("/")
+      router.push(`/${params.storeId}/billboards`	)
       toast.success("Billboard deleted successfully 🎉");
     } catch (error) {
       toast.error("🚫 All categories using this Billboard need to be deleted first. 🚫");
@@ -151,7 +150,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
         </Button>
       </form>
     </Form>
-    <Separator/>
   </>
   )
 };
