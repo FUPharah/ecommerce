@@ -79,6 +79,10 @@ export const CellAction: React.FC<CellActionProps> = ({
             <CopyCheck className="mr-2 h-4 w-4"/>
             Copy Name
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onCopyValue(data.id)}>
+            <CopyCheck className="mr-2 h-4 w-4"/>
+            Copy Value
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onDateCopy(data.createdAt)}>
             <CopyCheck className="mr-2 h-4 w-4"/>
             Copy Date
