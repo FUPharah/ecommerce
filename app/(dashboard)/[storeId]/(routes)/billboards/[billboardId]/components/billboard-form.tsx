@@ -40,6 +40,8 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const description = initialData ? "Edit your billboard" : "Create a new billboard";
   const toastMessage = initialData ? "Billboard updated successfully 🎉" : "Billboard created successfully 🎉";
   const action = initialData ? "Save Changes" : "Create Billboard";
+  const toastError = initialData ? "Something went wrong. 🤦‍♂️" : "Make sure you removed all categories using this billboard first. ❗❕";
+  const toastCancel = initialData ? "❌ Billboard update canceled. ❌ " : "❌ Billboard creation canceled. ❌";
 
   const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
@@ -48,6 +50,11 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
       imageUrl: "",
     }
   });
+
+  const onCancel = () => {
+    toast.error(toastCancel);
+    router.back();
+  }
 
   const onSubmit = async (data: BillboardFormValues) => {
     try {
@@ -63,7 +70,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
       router.push(`/${params.storeId}/billboards`);
       toast.success(toastMessage);
     } catch (error) {
-      toast.error("Something went wrong 🤷‍♂️");
+      toast.error(toastError);
     } finally {
       setLoading(false);
     }
@@ -77,7 +84,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
       router.push(`/${params.storeId}/billboards`	)
       toast.success("Billboard deleted successfully 🎉");
     } catch (error) {
-      toast.error("🚫 All categories using this Billboard need to be deleted first. 🚫");
+      toast.error(toastError);
     } finally {
       setLoading(false);
       setOpen(false);
@@ -138,16 +145,32 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
             </FormItem>
           )}/>
         </div>
+        <div className="flex items-center justify-between">
+        <div>
         <Button disabled={loading} className="text-white bg-gradient-to-r
           from-lime-400 via-lime-500 to-lime-600 hover:bg-gradient-to-br
           focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800
           rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-green-500 border-2
           border-opacity-50 hover:border-lime-800 focus:border-lime-200
           shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80"
-          type="submit"
-        >
+          type="submit">
           <span className="font-bold">{action}</span>
         </Button>
+        </div>
+        <div className="flex-grow">
+          <Button
+            disabled={loading}
+            className="text-white bg-gradient-to-r
+            from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br
+            focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800
+            rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-rose-500 border-2
+            border-opacity-50 hover:border-rose-800 focus:border-rose-200
+            shadow-lg shadow-rose-500/50 dark:shadow-lg dark:shadow-rose-800/80 flex items-center justify-center"
+            onClick={onCancel} type="button">
+            <span className="font-bold hover:text-black">Cancel</span>
+          </Button>
+        </div>
+        </div>
       </form>
     </Form>
   </>

@@ -58,7 +58,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             open();
           }
           return (
-            <Button className="bg-slate-400 border-2 border-slate-500 shadow-md shadow-slate-500 hover:shadow-slate-400 hover:bg-slate-300 hover:border-slate-400" type="button"
+            <Button className="bg-slate-400 border-2 border-slate-500 shadow-md
+            shadow-slate-500 hover:shadow-slate-400 hover:bg-slate-300 hover:border-slate-400" type="button"
               disabled={disabled}
               variant="secondary"
               onClick={onClick}
