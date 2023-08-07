@@ -28,6 +28,11 @@ export const CellAction: React.FC<CellActionProps> = ({
     toast.success("Name Copied to clipboard successfully");
   };
 
+  const onCopyBillboard = (id: string,) => {
+    navigator.clipboard.writeText(data.billboardLabel);
+    toast.success("Billboard Copied to clipboard successfully");
+  };
+
   const onDateCopy = (createdAt: string,) => {
     navigator.clipboard.writeText(data.createdAt);
     toast.success("Date Copied to clipboard successfully");
@@ -74,6 +79,10 @@ export const CellAction: React.FC<CellActionProps> = ({
           <DropdownMenuItem onClick={() => onCopy(data.id)}>
             <CopyCheck className="mr-2 h-4 w-4"/>
             Copy Name
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onCopyBillboard(data.id)}>
+            <CopyCheck className="mr-2 h-4 w-4"/>
+            Copy Billboard
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onDateCopy(data.createdAt)}>
             <CopyCheck className="mr-2 h-4 w-4"/>
