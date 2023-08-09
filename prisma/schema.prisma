@@ -16,6 +16,7 @@ model Store {
   categories Category[] @relation("StoreCategory")
   sizes Size[] @relation("StoreSize")
   colours Colour[] @relation("StoreColour")
+  products Product[] @relation("StoreProduct")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -38,6 +39,7 @@ model Category {
   store Store @relation("StoreCategory", fields: [storeId], references: [id])
   billboardId String
   billboard Billboard @relation(fields: [billboardId], references: [id])
+  products Product[] @relation("CategoryProduct")
   name String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -49,6 +51,7 @@ model Size {
   id String @id @default(uuid())
   storeId String
   store Store @relation("StoreSize", fields: [storeId], references: [id])
+  products Product[]
   name String
   value String
   createdAt DateTime @default(now())
@@ -60,9 +63,43 @@ model Colour {
   id String @id @default(uuid())
   storeId String
   store Store @relation("StoreColour", fields: [storeId], references: [id])
+  products Product[]
   name String
   value String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([storeId])
+}
+
+model Product {
+  id String @id @default(uuid())
+  storeId String
+  store Store @relation("StoreProduct", fields: [storeId], references: [id])
+  categoryId String
+  category Category @relation("CategoryProduct", fields: [categoryId], references: [id])
+  name String
+  price Decimal
+  isFeatured Boolean @default(false)
+  isArchived Boolean @default(false)
+  sizeId String
+  size Size @relation(fields: [sizeId], references: [id])
+  colourId String
+  colour Colour @relation(fields: [colourId], references: [id])
+  images Image[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([storeId])
+  @@index([categoryId])
+  @@index([sizeId])
+  @@index([colourId])
+}
+
+model Image {
+  id String @id @default(uuid())
+  productId String
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([productId])
 }

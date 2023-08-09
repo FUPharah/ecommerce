@@ -67,12 +67,12 @@ export const SizeForm: React.FC<SizeFormProps> = ({
   }
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent the default form submission behavior
+    event.preventDefault();
 
     try {
       setLoading(true);
 
-      const formData = form.getValues(); // Get the form data from the react-hook-form
+      const formData = form.getValues();
       if (initialData) {
         await axios.patch(`/api/${params.storeId}/sizes/${params.sizeId}`, formData);
       } else {
@@ -150,12 +150,12 @@ export const SizeForm: React.FC<SizeFormProps> = ({
             <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger className="border-2 border-black hover:border-sky-500" >
-                  <SelectValue defaultValue={field.value} placeholder="Select a billboard" />
+                  <SelectValue defaultValue={field.value} placeholder="Select a size value" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent >
                 {sizes.map((size) => (
-                  <SelectItem key={size.value} value={size.name}>{size.value}
+                  <SelectItem key={size.name} value={size.value}>{size.value}
                     {size.name === field.value && (
                       <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">(Current)</span>
                     )}
@@ -202,3 +202,31 @@ export const SizeForm: React.FC<SizeFormProps> = ({
   </>
   )
 };
+
+
+{/* <Form {...form}>
+<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+  <div className="grid grid-cols-3 gap-8">
+    <FormField control={form.control} name="name" render={({ field }) => (
+      <FormItem>
+        <FormLabel>
+          <span className="text-sm font-medium text-gray-700">Name</span>
+        </FormLabel>
+        <FormControl>
+          <Input disabled={loading} placeholder="Size Name" {...field}/>
+        </FormControl>
+        <FormMessage/>
+      </FormItem>
+    )}/>
+    <FormField control={form.control} name="value" render={({ field }) => (
+      <FormItem>
+        <FormLabel>
+          <span className="text-sm font-medium text-gray-700">Value</span>
+        </FormLabel>
+        <FormControl>
+          <Input disabled={loading} placeholder="Size Value" {...field}/>
+        </FormControl>
+        <FormMessage/>
+      </FormItem>
+    )}/>
+  </div> */}
