@@ -42,15 +42,7 @@ export async function PATCH (
     if (!price) {
       return new NextResponse("Price is Required", { status: 400 })
     }
-
-    if (isFeatured === undefined) {
-      return new NextResponse("isFeatured is Required", { status: 400 })
-    }
-
-    if (isArchived === undefined) {
-      return new NextResponse("isArchived is Required", { status: 400 })
-    }
-
+    
     if (typeof isFeatured !== "boolean") {
       return new NextResponse("isFeatured must be a boolean", { status: 400 })
     }
