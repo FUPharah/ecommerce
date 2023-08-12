@@ -2,6 +2,7 @@
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
+import { Check, X } from "lucide-react"
 
 
 export type OrderColumn = {
@@ -84,7 +85,16 @@ export const columns: ColumnDef<OrderColumn>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
-    }
+    },
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        {row.original.isPaid === true ? (
+          <Check className="h-5 w-5 text-green-500" />
+        ) : (
+          <X className="h-5 w-5 text-red-500" />
+        )}
+      </div>
+    ),
   },
   {
     accessorKey: "createdAt",
