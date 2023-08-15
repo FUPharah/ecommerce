@@ -33,7 +33,7 @@ export async function POST(
         userId
       }
     })
-    
+
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 401 })
     }
@@ -67,6 +67,9 @@ export async function GET(
       where: {
         storeId: params.storeId
       },
+      include: {
+        billboard: true
+      }
     });
 
     return NextResponse.json(categories);
