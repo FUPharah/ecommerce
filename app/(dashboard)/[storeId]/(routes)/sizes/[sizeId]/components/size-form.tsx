@@ -1,8 +1,7 @@
 "use client"
-
 import * as z from "zod"
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
@@ -60,6 +59,8 @@ export const SizeForm: React.FC<SizeFormProps> = ({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<{ name: string; value: string } | null>(null);
+
 
   const title = initialData ? 'Edit Size' : 'New Size';
   const description = initialData ? 'Edit your Size' : 'Create a new Size';
@@ -71,10 +72,17 @@ export const SizeForm: React.FC<SizeFormProps> = ({
   const form = useForm<SizeFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      name: ''
-    }
+      name: '',
+    },
   });
 
+  useEffect(() => {
+    if (selectedSize) {
+      form.setValue("name", selectedSize.name);
+      form.trigger("name");
+    }
+  }, [selectedSize, form]);
+  
   const onCancel = () => {
     toast.error(toastCancel);
     router.back();
@@ -111,110 +119,122 @@ export const SizeForm: React.FC<SizeFormProps> = ({
       setLoading(false);
       setOpen(false);
     }
-  }
+  };
 
   return (
     <>
-    <AlertModal
-      isOpen={open}
-      onClose={() => setOpen(false)}
-      onConfirm={onDelete}
-      loading={loading}
-    />
-    <div className="flex items-center justify-between">
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={loading}
+      />
+      <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
-          <Button disabled={loading} variant="destructive" className="bg-gradient-to-r
-          from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4
-          focus:outline-none focus:ring-red-300 dark:focus:ring-red-800
-          shadow-lg shadow-red-500/50 dark:shadow-lg
-          dark:shadow-red-800/80"
-          size="icon"
-          onClick={() => setOpen(true)}
-        >
-          <Trash2 className="h-4 w-4 "/>
-        </Button>
+          <Button
+            disabled={loading}
+            variant="destructive"
+            className="bg-gradient-to-r
+            from-red-400 via-red_500 to-red_600 hover:bg-gradient-to-br focus:ring-4
+            focus:outline-none focus:ring-red_300 dark:focus:ring-red_800
+            shadow-lg shadow-red-500/50 dark:shadow-lg
+            dark:shadow-red_800/80"
+            size="icon"
+            onClick={() => setOpen(true)}
+          >
+            <Trash2 className="h-4 w-4 " />
+          </Button>
         )}
       </div>
       <Separator />
       <Form {...form}>
-  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-    <div className="md:grid md:grid-cols-4 gap-8">
-      <FormField
-        control={form.control}
-        name="name"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Name</FormLabel>
-            <FormControl className="border-2 border-black hover:border-sky-500">
-              <Input disabled={loading} placeholder="Size Name" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="value"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              <span className="text-sm font-medium text-gray-700">Size</span>
-            </FormLabel>
-            <FormControl>
-              <Select
-                disabled={loading}
-                onValueChange={field.onChange}
-                value={field.value}
-                defaultValue={field.value}
-              >
-                <SelectTrigger className="border-2 border-black hover:border-sky-500">
-                  <SelectValue defaultValue={field.value} placeholder="Select a size value" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sizes.map((size) => (
-                    <SelectItem key={size.value} value={size.value}>
-                      {size.value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
-              <FormMessage />
-          </FormItem>
-        )}
-        />
-    </div>
-    <Separator />
-        <div className="flex items-center">
-        <Button
-          disabled={loading}
-          className="text-white bg-gradient-to-r
-          from-lime-400 via-lime-500 to-lime-600 hover:bg-gradient-to-br
-          focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800
-          rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-green-500 border-2
-          border-opacity-50 hover:border-lime-800 focus:border-lime-200
-          shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80"
-          type="submit"
-          >
-          <span className="font-bold hover:text-black">{action}</span>
-        </Button>
-        <Button
-          disabled={loading}
-          className="text-white bg-gradient-to-r
-          from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br
-          focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800
-          rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-rose-500 border-2
-          border-opacity-50 hover:border-rose-800 focus:border-rose-200
-          shadow-lg shadow-rose-500/50 dark:shadow-lg dark:shadow-rose-800/80 flex items-center justify-center"
-          onClick={onCancel}
-          type="button"
-        >
-          <span className="font-bold hover:text-black">Cancel</span>
-        </Button>
-        </div>
-  </form>
-</Form>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+          <div className="md:grid md:grid-cols-4 gap-8">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl className="border-2 border-black hover:border-sky-500">
+                    <Input
+                      disabled={loading}
+                      placeholder="Size Name"
+                      onChange={field.onChange}
+                      value={selectedSize?.name || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <span className="text-sm font-medium text-gray-700">Size</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      disabled={loading}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        const selected = sizes.find((size) => size.value === value);
+                        setSelectedSize(selected || null);
+                      }}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="border-2 border-black hover:border-sky-500">
+                        <SelectValue defaultValue={field.value} placeholder="Select a size value" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sizes.map((size) => (
+                          <SelectItem key={size.value} value={size.value}>
+                            {size.value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Separator />
+          <div className="flex items-center">
+            <Button
+              disabled={loading}
+              className="text-white bg-gradient-to-r
+              from-lime-400 via-lime-500 to-lime-600 hover:bg-gradient-to-br
+              focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800
+              rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-green-500 border-2
+              border-opacity-50 hover:border-lime-800 focus:border-lime-200
+              shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80"
+              type="submit"
+            >
+              <span className="font-bold hover:text-black">{action}</span>
+            </Button>
+            <Button
+              disabled={loading}
+              className="text-white bg-gradient-to-r
+              from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br
+              focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800
+              rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-rose-500 border-2
+              border-opacity-50 hover:border-rose-800 focus:border-rose-200
+              shadow-lg shadow-rose-500/50 dark:shadow-lg dark:shadow-rose-800/80 flex items-center justify-center"
+              onClick={onCancel}
+              type="button"
+            >
+              <span className="font-bold hover:text-black">Cancel</span>
+            </Button>
+          </div>
+        </form>
+      </Form>
     </>
-  )
-}
+  );
+};
